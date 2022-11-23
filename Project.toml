@@ -1,2 +1,6 @@
+name = "top-down-vs-bottom-up"
+[compat]
+julia = "1.7.2"
+DrWatson = "2.10.0"
 [deps]
 DrWatson = "634d3b9d-ee7a-5ddf-bec9-22491ea816e1"
