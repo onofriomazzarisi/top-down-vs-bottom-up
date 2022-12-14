@@ -7,7 +7,7 @@ using LsqFit
 using Polynomials
 @quickactivate
 
-include("../data/data-reduced.jl");
+include("../database/data-reduced.jl");
 
 # functions for fits
 
