@@ -118,3 +118,18 @@ tspan = (0.0,100.0)
             linecolor = :black,
             linestyle = :dash)
     Plots.plot!(p1, p2)
+
+# ---
+
+# Parametrization of the ODE
+
+m = .00023 #(1/day) predator mortality rate
+g = .0083 #(1) predator growth efficiency
+b₀ = 10 #(kg/km^2) minimum biomass of communities
+bpred = 70 #(kg) predator mean body mass
+q = (bpred^(0.68)*10^(-3.08))*0.0864/bpred #(km^2/(kg day)) per kg predator search rate
+k = .75 #predator-prey exponent
+α = 1. #saturation exponent
+
+# coefficient value
+C_est = (g*q/m)^(k/α)*b₀^(1+k/α-k) # assuming α=1, we are within the confidence interval of c (95% CI for c = 0.038, 0.15)
