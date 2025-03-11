@@ -68,7 +68,10 @@ function initialize_model(;
         sheeps_immigration = sheeps_immigration,
         initial_energy_sheep = initial_energy_sheep,
         )
-    model = Agents.ABM(SheepWolf, space; properties, scheduler = Agents.Schedulers.randomly)
+    
+    rng = seed == nothing ? Random.GLOBAL_RNG : Random.MersenneTwister(seed)
+
+    model = Agents.ABM(SheepWolf, space; properties = properties, scheduler = Agents.Schedulers.Randomly(), model_step! = model_step!, agent_step! = sheepwolf_step!, rng = rng)
     id = 0
     for _ = 1:n_sheep
         id += 1
@@ -78,6 +81,7 @@ function initialize_model(;
         id += 1
         Agents.add_agent!(SheepWolf(id, Agents.random_position(model), :wolf, initial_energy_wolf, 0), model)
     end
+    println(model)
     return model
 end
 
@@ -110,11 +114,11 @@ function sheep_eat!(sheep, sheep_here, model)
 end
 
 function wolf_eat!(wolf, prey, model)
-    if Random.rand(model.rng) < model.catch_prob
+    if Random.rand(abmrng(model)) < model.catch_prob
         wolf.energy += model.wolf_Δe
-        Agents.kill_agent!(prey, model)
+        Agents.remove_agent!(prey, model)
         model.agents_killed_temp["sheep"][1] += 1
-        if Random.rand(model.rng) < model.wolf_reproduction_prob
+        if Random.rand(abmrng(model)) < model.wolf_reproduction_prob
             reproduce!(wolf, model)
             model.agents_born_temp["wolf"][1] += 1
         end
@@ -122,8 +126,8 @@ function wolf_eat!(wolf, prey, model)
 end
 
 function wolf_fight!(competitor, wolf_here, model)
-    if Random.rand(model.rng) <= (length(wolf_here)/model.interference_scale)^model.interference_exponent
-        Agents.kill_agent!(competitor, model)
+    if Random.rand(abmrng(model)) <= (length(wolf_here)/model.interference_scale)^model.interference_exponent
+        Agents.remove_agent!(competitor, model)
         model.agents_killed_temp["wolf"][1] += 1
         #competitor.energy -= model.wolf_Δe
     end
@@ -143,7 +147,7 @@ end
 
 function sheepwolf_step!(agent::SheepWolf, model)
 
-    Agents.walk!(agent, rand, model)
+    Agents.randomwalk!(agent, model)
     agent.energy -= model.base_metabolic_rate 
     agent.age += 1
 
@@ -151,10 +155,10 @@ function sheepwolf_step!(agent::SheepWolf, model)
         sheep_here = collect_sheep_here(agent, model)
         sheep_eat!(agent, sheep_here, model)
         if agent.energy < 0
-            Agents.kill_agent!(agent, model)
+            Agents.remove_agent!(agent, model)
             model.agents_starved_temp["sheep"][1] += 1
             return
-        elseif Random.rand(model.rng) <= model.sheep_reproduction_prob
+        elseif Random.rand(abmrng(model)) <= model.sheep_reproduction_prob
             reproduce!(agent, model)
             model.agents_born_temp["sheep"][1] += 1
             return
@@ -162,7 +166,7 @@ function sheepwolf_step!(agent::SheepWolf, model)
     else
         others_here = collect_others_here(agent, model)
         if !isempty(others_here)
-            encounter = rand(model.rng, others_here)
+            encounter = rand(abmrng(model), others_here)
             if sheep(encounter)
                 wolf_eat!(agent, encounter, model)
             else
@@ -171,7 +175,7 @@ function sheepwolf_step!(agent::SheepWolf, model)
             end
         end
         if agent.energy < 0
-            Agents.kill_agent!(agent, model)
+            Agents.remove_agent!(agent, model)
             model.agents_starved_temp["wolf"][1] += 1
             return
         #elseif Random.rand(model.rng) <= model.wolf_reproduction_prob

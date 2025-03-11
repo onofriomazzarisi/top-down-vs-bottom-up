@@ -1,6 +1,12 @@
 name = "top-down-vs-bottom-up"
-[compat]
-julia = "1.7.2"
-DrWatson = "2.10.0"
+
 [deps]
+Agents = "46ada45e-f475-11e8-01d0-f70cc89e6671"
 DrWatson = "634d3b9d-ee7a-5ddf-bec9-22491ea816e1"
+InteractiveDynamics = "ec714cd0-5f51-11eb-0b6e-452e7367ff84"
+PGFPlots = "3b7a836e-365b-5785-a47d-02c71176b4aa"
+ProgressBars = "49802e3a-d2f1-5c88-81d8-b72133a6f568"
+
+[compat]
+DrWatson = "2.10.0"
+julia = "1.7.2"

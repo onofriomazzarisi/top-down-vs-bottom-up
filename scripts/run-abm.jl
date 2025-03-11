@@ -1,14 +1,14 @@
 ### Runs the abm model ###
 
 using DrWatson
+@quickactivate
+
 using StatsBase
 using Plots
-using PGFPlots
 using DelimitedFiles
 using InteractiveDynamics
 using LaTeXStrings
 
-@quickactivate
 
 include("../src/pred-prey-abm.jl");
 
@@ -32,14 +32,14 @@ model = initialize_model(
     sheeps_immigration = true,
     );
 
-    n = 10000;
+    n = 1000;
 
     adata = [(sheep, count), (wolves, count)];
     mdata = [count_grass];
 
-    @time adf, mdf = Agents.run!(model, sheepwolf_step!, model_step!, n; adata = adata , mdata = mdata)
+    @time adf, mdf = Agents.run!(model, n; adata = adata , mdata = mdata)
 
-Plots.plot(adf.step, [adf.count_sheep/(4^2), adf.count_wolves/(4^2)],
+Plots.plot(adf.time, [adf.count_sheep/(4^2), adf.count_wolves/(4^2)],
 legends = :topright,    
 labels = [L"\textrm{prey \ density} \ B_1" L"\textrm{pred \ density} \ B_2"],
 linewidth = 2,

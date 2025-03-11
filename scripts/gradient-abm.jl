@@ -1,15 +1,15 @@
 ### Runs the abm model to analyse biomass gradient ###
 
 using DrWatson
+quickactivate("top-downvs-bottom-up")
+
 using StatsBase
 using Plots
-using PGFPlots
+#using PGFPlots
 using DelimitedFiles
 using InteractiveDynamics
 using ProgressBars
 using LaTeXStrings
-
-@quickactivate
 
 include("../src/pred-prey-abm.jl");
 
@@ -38,11 +38,11 @@ for λ in ProgressBars.tqdm(x)
         sheeps_immigration = true,
         );
 
-    n = 500
+    n = 500;
 
     adata = [(sheep, count), (wolves, count)];
     mdata = [count_grass];
-    adf, mdf = Agents.run!(model, sheepwolf_step!, model_step!, n; adata = adata , mdata = mdata)
+    adf, mdf = Agents.run!(model, n; adata = adata, mdata = mdata)
 
     append!(s_counts, [adf.count_sheep])
     append!(w_counts, [adf.count_wolves])
