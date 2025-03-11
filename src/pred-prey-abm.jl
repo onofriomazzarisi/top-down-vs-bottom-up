@@ -81,7 +81,6 @@ function initialize_model(;
         id += 1
         Agents.add_agent!(SheepWolf(id, Agents.random_position(model), :wolf, initial_energy_wolf, 0), model)
     end
-    println(model)
     return model
 end
 
