@@ -1,11 +1,8 @@
 ### Agent based model ###
-
-using DrWatson
-@quickactivate
-
-import Random, Distributions, Statistics
-import Agents
-import ProgressBars
+"""
+Packages used:
+DrWatson, Random, Distributions, Statistics, Agents
+"""
 
 mutable struct SheepWolf <: Agents.AbstractAgent
     id::Int
@@ -134,7 +131,7 @@ end
 
 function reproduce!(agent, model)
     agent.energy /= 2
-    Agents.add_agent_pos!(SheepWolf(
+    Agents.add_agent_own_pos!(SheepWolf(
         Agents.nextid(model),
         agent.pos,
         agent.type,

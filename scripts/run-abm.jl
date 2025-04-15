@@ -8,6 +8,10 @@ using Plots
 using DelimitedFiles
 using InteractiveDynamics
 using LaTeXStrings
+using Agents
+using Random
+using Distributions 
+using Statistics
 
 
 include("../src/pred-prey-abm.jl");
